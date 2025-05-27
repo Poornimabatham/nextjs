@@ -1,8 +1,12 @@
 // app/login/page.tsx
 'use client'
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+
 
 export default function LoginPage() {
+  const router = useRouter()
+
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
@@ -16,8 +20,14 @@ export default function LoginPage() {
     })
 
     const data = await res.json()
-    alert(data.message)
-  }
+
+    console.log('API response:', res.status, data)
+
+    if (res.status==200) {
+      alert('Login successful!')
+      router.push('/dashboard')
+    }
+  }  
 
   return (
     <div className="p-4 max-w-sm mx-auto">

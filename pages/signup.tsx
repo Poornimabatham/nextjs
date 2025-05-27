@@ -9,6 +9,7 @@ export default function SignupForm() {
   const [message, setMessage] = useState('')
 
   const handleSignup = async () => {
+    
     const { data, error } = await supabase.auth.signUp({
       email: email.trim(),
       password: password.trim(),
@@ -19,6 +20,18 @@ export default function SignupForm() {
     } else {
       setMessage('Signup successful! Check your email to confirm.')
     }
+
+    
+    // Step 2: Call your API to store user data in your custom "users" table
+    const res = await fetch('/api/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: email.trim(),
+        user_id: data.user?.id, // Pass the Supabase user ID
+      }),
+    })
+
   }
 
   return (

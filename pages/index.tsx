@@ -1,7 +1,8 @@
 // app/login/page.tsx
 'use client'
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { redirect, useRouter } from 'next/navigation'
+
 
 
 export default function LoginPage() {
@@ -25,7 +26,7 @@ export default function LoginPage() {
 
     if (res.status==200) {
       alert('Login successful!')
-      router.push('/dashboard')
+      router.push('/app/dashboard/pages'); // ✅ Client-side redirect
     }
   }  
 

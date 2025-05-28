@@ -1,31 +1,32 @@
-import React from 'react';
-import { api } from '../utils/trpc';
+'use client';
 
-type Task = {
-  id: number;
-  title: string;
-  description?: string;
-  // add other task fields as needed
-};
+import { trpc } from '@/utils/trpc'; // adjust if your trpc hook is elsewhere
+import { useEffect } from 'react';
 
-export const TaskList: React.FC = () => {
-  const { data: tasks, isLoading, error } = api.task.getAll.useQuery();
+export default function TaskList() {
+  const utils = trpc.useUtils();
+  const { data: tasks, isLoading } = trpc.task.getAll.useQuery();
+  const deleteTask = trpc.task.delete.useMutation({
+    onSuccess: () => {
+      utils.task.getAll.invalidate(); // Refresh the list after delete
+    },
+  });
 
-  if (isLoading) return <div>Loading tasks...</div>;
-  if (error) return <div>Error loading tasks: {error.message}</div>;
-  if (!tasks || tasks.length === 0) return <div>No tasks found.</div>;
+  if (isLoading) return <p>Loading...</p>;
 
   return (
-    <div>
-      <h2>Task List</h2>
-      <ul>
-        {tasks.map((task: Task) => (
-          <li key={task.id}>
-            <strong>{task.title}</strong>
-            {task.description && <p>{task.description}</p>}
-          </li>
-        ))}
-      </ul>
+    <div className="space-y-4">
+      {tasks?.map((task) => (
+        <div key={task.id} className="flex justify-between items-center border p-2">
+          <span>{task.name}</span>
+          <button
+            onClick={() => deleteTask.mutate(task.id)}
+            className="bg-red-500 text-white px-2 py-1 rounded"
+          >
+            Delete
+          </button>
+        </div>
+      ))}
     </div>
   );
-};
+}

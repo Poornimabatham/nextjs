@@ -1,21 +1,23 @@
 'use client'
 
-import { useEffect, useState, FormEvent } from 'react'
+import { useEffect, useState ,FormEvent} from 'react'
+
 import { useRouter } from 'next/navigation'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Session } from '@supabase/supabase-js'
 
 export default function DashboardPage() {
+  
+  const [message, setMessage] = useState<string>("");
+  const supabase = createClientComponentClient()
+  const router = useRouter()
+  const [session, setSession] = useState<Session | null>(null)
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [dueDate, setDueDate] = useState('')
   const [priority, setPriority] = useState('Medium')
   const [status, setStatus] = useState('To Do')
-  const [message, setMessage] = useState('')
-  const [session, setSession] = useState<Session | null>(null)
 
-  const supabase = createClientComponentClient()
-  const router = useRouter()
 
   useEffect(() => {
     const getSession = async () => {
@@ -29,7 +31,7 @@ export default function DashboardPage() {
     getSession()
   }, [router, supabase])
 
-  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
 
     const task = {
@@ -59,11 +61,23 @@ export default function DashboardPage() {
       setMessage("❌ Failed to create task: " + data.error)
     }
   }
+  useEffect(() => {
+    const getSession = async () => {
+      const { data } = await supabase.auth.getSession()
+      if (!data.session) {
+        router.push('/login')
+      } else {
+        setSession(data.session)
+      }
+    }
 
-  if (!session) return <p className="text-center mt-10 text-lg">Loading dashboard...</p>
+    getSession()
+  }, [router, supabase])
+
+  if (!session) return <p>Loading dashboard...</p>
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6 flex flex-col items-center">
+   <div className="min-h-screen bg-gray-100 p-6 flex flex-col items-center">
       <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-md">
         <h1 className="text-2xl font-bold mb-4 text-center text-gray-800">
           Welcome, {session.user.email}!

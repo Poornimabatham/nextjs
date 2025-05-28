@@ -1,12 +1,12 @@
-// app/login/page.tsx
 'use client'
+
 import { useState } from 'react'
-import { redirect, useRouter } from 'next/navigation'
-
-
+import { useRouter } from 'next/navigation'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 
 export default function LoginPage() {
   const router = useRouter()
+  const supabase = createClientComponentClient()
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -14,21 +14,18 @@ export default function LoginPage() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    const res = await fetch('/api/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
     })
 
-    const data = await res.json()
-
-    console.log('API response:', res.status, data)
-
-    if (res.status==200) {
+    if (error) {
+      alert('Login failed: ' + error.message)
+    } else {
       alert('Login successful!')
-      router.push('/app/dashboard/pages'); // ✅ Client-side redirect
-    }
-  }  
+      router.push('/app/dashboard/page'); // ✅ Client-side redirect
+     }
+  }
 
   return (
     <div className="p-4 max-w-sm mx-auto">

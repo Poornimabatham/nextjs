@@ -49,7 +49,9 @@ export default function DashboardPage() {
 
     const data = await res.json()
     if (res.ok) {
-      setMessage("✅ Task created successfully!")
+      setMessage("✅ Tas!")
+        router.push('/') // move this here
+
       setTitle('')
       setDescription('')
       setDueDate('')

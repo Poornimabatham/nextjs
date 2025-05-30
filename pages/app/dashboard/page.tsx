@@ -51,7 +51,7 @@ export default function DashboardPage() {
 
     const data = await res.json()
     if (res.ok) {
-      setMessage("✅ Task created successfully!")
+      setMessage("✅ Task create successfully!")
       setTitle('')
       setDescription('')
       setDueDate('')

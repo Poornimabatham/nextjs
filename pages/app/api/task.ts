@@ -19,10 +19,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(401).json({ error: 'Unauthorized' })
   }
 
-  const { title, description, dueDate, priority, status ,assignedToId,created_at} = req.body
-
-console.log(req.body,"opooo")
-
+  const { title, description, dueDate, priority, status } = req.body
+console.log(req.body,"poooor")
   try {
     const { error } = await supabase.from('tasks').insert([
       {
@@ -32,9 +30,6 @@ console.log(req.body,"opooo")
         priority,
         status,
         created_by_id: session.user.id,
-        assignedToId:assignedToId,
-        created_at
-
       },
     ])
 

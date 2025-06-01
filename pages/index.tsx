@@ -23,7 +23,7 @@ export default function LoginPage() {
       alert('Login failed: ' + error.message)
     } else {
       alert('Login successful!')
-      router.push('/app/dashboard/page'); // ✅ Client-side redirect
+      router.push('/app/UserProfile/page');
      }
   }
 

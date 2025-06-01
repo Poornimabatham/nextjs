@@ -1,45 +1,52 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { supabase } from "@/lib/supabase";
-import { getServerSession } from "next-auth";
-import { authOptions } from "./auth/[...nextauth]";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const session = await getServerSession(req, res, authOptions);
-
-  if (!session?.user?.email) {
-    return res.status(401).json({ error: "Unauthorized" });
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { data: userData, error: userError } = await supabase
-    .from("users")
-    .select("id")
-    .eq("email", session.user.email)
-    .single();
+  const { email, user_id } = req.body;
 
-  if (userError || !userData) {
-    return res.status(400).json({ error: "User not found" });
+  if (!email || !user_id) {
+    return res.status(400).json({ error: "Missing email or user_id" });
   }
 
-  const userId = userData.id;
+  try {
+    // Step 1: Check if user exists
+    const { data: existingUser, error: selectError } = await supabase
+      .from("users")
+      .select("id")
+      .eq("email", email)
+      .single();
 
-  if (req.method === "POST") {
-    const { title, description, dueDate, priority, status } = req.body;
+    if (selectError && selectError.code !== "PGRST116") {
+      // PGRST116 = No rows found (in some Supabase setups) - check your DB error codes
+      return res.status(500).json({ error: selectError.message });
+    }
 
-    const { data, error } = await supabase.from("tasks").insert([
-      {
-        title,
-        description,
-        due_date: dueDate,
-        priority,
-        status,
-        created_by: userId,
-      },
-    ]);
+    if (existingUser) {
+      // User already exists - no duplicate insertion
+      return res.status(409).json({ message: "User already exists" });
+    }
 
-    if (error) return res.status(400).json({ error: error.message });
+    // Step 2: Insert new user
+    const { data: insertedUser, error: insertError } = await supabase
+      .from("users")
+      .insert([
+        {
+          id: user_id, // Assuming user_id is your auth user id, and your users table has a matching PK
+          email,
+          // Add other user fields here if needed
+        },
+      ]);
 
-    return res.status(201).json(data);
+    if (insertError) {
+      return res.status(500).json({ error: insertError.message });
+    }
+
+    return res.status(201).json({ message: "User created successfully", user: insertedUser });
+  } catch (err) {
+    return res.status(500).json({ error: "Internal server error" });
   }
-
-  res.status(405).end();
 }

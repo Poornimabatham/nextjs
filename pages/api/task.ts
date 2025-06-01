@@ -19,7 +19,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(401).json({ error: 'Unauthorized' })
   }
 
-  const { title, description, dueDate, priority, status ,assignedToId,created_at} = req.body
+  const { title, description, dueDate, priority, status ,createdById,assignedToId,created_at} = req.body
 
 console.log(req.body,"opooo")
 
@@ -31,7 +31,7 @@ console.log(req.body,"opooo")
         due_date: dueDate,
         priority,
         status,
-        created_by_id: session.user.id,
+        created_by_id: createdById,
         assignedToId:assignedToId,
         created_at
 

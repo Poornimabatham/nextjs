@@ -37,7 +37,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         {
           id: user_id, // Assuming user_id is your auth user id, and your users table has a matching PK
           email,
-          // Add other user fields here if needed
         },
       ]);
 

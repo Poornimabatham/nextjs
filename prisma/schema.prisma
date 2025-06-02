@@ -26,6 +26,8 @@ model User {
   sessions      Session[]
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+  password    String
+
 }
 
 model Account {
@@ -60,16 +62,6 @@ model VerificationToken {
 
 
 
-model User {
-  id          String           @id @default(cuid())
-  name        String?
-  email       String           @unique
-  password    String
-  tasks       Task[] // Tasks created by user
-  projects    Project[] // Projects owned by user
-  assignments TaskAssignment[] // Tasks assigned to user
-}
-
 model Task {
   id          String           @id @default(cuid())
   title       String
@@ -84,28 +76,6 @@ model Task {
   assignments TaskAssignment[] // Many-to-many assignments
 }
 
-model Project {
-  id          String           @id @default(uuid())
-  name        String
-  description String?
-  ownerId     String
-  owner       User             @relation(fields: [ownerId], references: [id])
-  createdAt   DateTime         @default(now())
-  tasks       TaskAssignment[] // Optional: if you want to connect tasks to project
-}
 
-model TaskAssignment {
-  task   Task   @relation(fields: [taskId], references: [id])
-  taskId String
 
-  user   User   @relation(fields: [userId], references: [id])
-  userId String
 
-  assignedAt DateTime @default(now())
-  Project    Project? @relation(fields: [projectId], references: [id])
-  projectId  String?
-
-  @@id([taskId, userId]) // Composite Primary Key
-    status     String?  // नया फ़ील्ड जोड़ो अगर चाहिए
-
-}

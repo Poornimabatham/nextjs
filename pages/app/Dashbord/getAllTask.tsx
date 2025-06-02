@@ -11,7 +11,7 @@ interface Task {
   priority?: string | null;
   tags?: string[] | null;
   assignedToId?: string | null;
-  email?: string | null; // assigned user email, from your data
+  email?: string | null; 
   createdById?: string | null;
   createdByEmail?: string | null;
 }

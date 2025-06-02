@@ -38,3 +38,92 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+
+Project Setup
+This project is a Next.js application with authentication powered by Supabase Auth, API routes and type-safe backend with tRPC, database access using Prisma, and styling done with Tailwind CSS.
+
+Prerequisites
+Node.js (v18+ recommended)
+
+npm or yarn
+
+A Supabase project (for authentication and database)
+
+PostgreSQL database configured for Prisma (can be local or cloud)
+
+1.Steps to Run Locally
+Clone the repository
+
+bash
+Copy
+Edit
+git clone https://github.com/Poornimabatham/nextjs.git
+cd NEXTJS1
+Install dependencies
+
+Install all required packages as listed in package.json:
+
+bash
+Copy
+Edit
+npm install
+
+# or
+
+yarn install
+Configure environment variables
+
+Create a .env.local file at the root of the project and add your environment variables:
+
+env
+Copy
+Edit
+NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+
+DATABASE_URL=your-database-connection-string
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=your-random-secret
+NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY come from your Supabase project.
+
+DATABASE_URL is your PostgreSQL connection string for Prisma.
+
+NEXTAUTH_SECRET is a random string used by NextAuth.js for session encryption. You can generate one with openssl rand -base64 32 or use an online generator.
+
+Set up Prisma
+
+Generate Prisma client and run migrations:
+
+bash
+Copy
+Edit
+npx prisma generate
+npx prisma migrate dev --name init
+Run the development server
+
+Start the Next.js app locally:
+
+bash
+Copy
+Edit
+npm run dev
+
+# or
+
+yarn dev
+Open your browser at http://localhost:3000 to view the app.
+
+Key Technologies Used
+Next.js v15.1.8: React framework for server-rendered apps.
+
+Supabase Auth: For authentication and user management.
+
+Prisma: Type-safe ORM for interacting with your PostgreSQL database.
+
+tRPC: Type-safe APIs between frontend and backend.
+
+Tailwind CSS: Utility-first CSS framework for styling.
+
+NextAuth.js: Authentication library integrated with Supabase.
+
+React Query: Data fetching and caching.
